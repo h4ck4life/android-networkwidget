@@ -31,8 +31,7 @@
         </receiver>
         
         <!-- //UpdateWidgetService -->
-        <service android:name=".UpdateWidgetService" >
-        </service>
+        <service android:name=".UpdateWidgetService" />
         
     </application>
 

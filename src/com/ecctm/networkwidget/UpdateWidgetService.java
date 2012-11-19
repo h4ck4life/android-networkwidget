@@ -12,6 +12,14 @@ import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+/*TODO:
+ * 1) Set Network Logo from a separate .java file, to allow easy adding of new networks.
+ * 2) Data Transfer info?
+ * 	2a) Check if Wireless is enabled
+ * 	2b) Get signal coverage & display on the right
+ * 	2c) Get up/down speeds & display
+*/
+
 public class UpdateWidgetService extends Service {
 
 	// Variables
@@ -25,16 +33,13 @@ public class UpdateWidgetService extends Service {
 		Log.i(LOG, "UpdateWidgetService Called");
 
 		// Set up our widget manager
-		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this
-				.getApplicationContext());
+		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
 
 		// get ids for ALL running instances of our widget
-		int[] allWidgetIds = intent
-				.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
+		int[] allWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 
 		// target this widget
-		ComponentName networkWidget = new ComponentName(
-				getApplicationContext(), NetworkWidgetProvider.class);
+		ComponentName networkWidget = new ComponentName(getApplicationContext(), NetworkWidgetProvider.class);
 
 		// get ids for ALL running instances of our widget
 		int[] allWidgetIds2 = appWidgetManager.getAppWidgetIds(networkWidget);
@@ -48,20 +53,9 @@ public class UpdateWidgetService extends Service {
 			// set up TelephonyManager to get our network info
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
-			/*TODO:
-			 * 1) Set Network Logo from a separate .java file, to allow easy adding of new networks.
-			 * 2) Data Transfer info?
-			 * 	2a) Check if Wireless is enabled
-			 * 	2b) Get signal coverage & display on the right
-			 * 	2c) Get up/down speeds & display
-			*/
-			
 			// setup our remoteview
-			RemoteViews remoteViews = new RemoteViews(this
-					.getApplicationContext().getPackageName(),
-					R.layout.widget_layout);
+			RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_layout);
 
-			
 			//Check AirplaneMode
 			if(!isAirplaneModeOn(this)) {
 				// Its off, we have networks, so...
@@ -137,9 +131,7 @@ public class UpdateWidgetService extends Service {
 		}
 
 	@Override
-	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
+	public IBinder onBind(Intent intent) {
 		return null;
 	}
-
 }
