@@ -30,7 +30,7 @@ public class UpdateWidgetService extends Service {
 	@Override
 	public void onStart(Intent intent, int startId) {
 		// Begin Logging
-		Log.i(LOG, "UpdateWidgetService Called");
+		Log.d(LOG, "UpdateWidgetService.onStart called.");
 
 		// Set up our widget manager
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
@@ -45,8 +45,8 @@ public class UpdateWidgetService extends Service {
 		int[] allWidgetIds2 = appWidgetManager.getAppWidgetIds(networkWidget);
 
 		// Log these ids
-		Log.w(LOG, "From Intent " + String.valueOf(allWidgetIds.length));
-		Log.w(LOG, "Direct " + String.valueOf(allWidgetIds2.length));
+		Log.d(LOG, "Intent " + String.valueOf(allWidgetIds.length));
+		Log.d(LOG, "Direct " + String.valueOf(allWidgetIds2.length));
 
 		// begin our update
 		for (int widgetId : allWidgetIds) {
@@ -54,7 +54,7 @@ public class UpdateWidgetService extends Service {
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
 			// setup our remoteview
-			RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_layout);
+			RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_net_layout);
 
 			//Check AirplaneMode
 			if(!isAirplaneModeOn(this)) {

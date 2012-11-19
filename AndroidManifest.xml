@@ -23,6 +23,7 @@
             android:permission="android.permission.READ_PHONE_STATE" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.ecctm.networkwidget.WIDGET_CLOCK_UPDATE" />
             </intent-filter>
 
             <meta-data
