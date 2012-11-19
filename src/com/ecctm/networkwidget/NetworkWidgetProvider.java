@@ -1,4 +1,4 @@
-package com.eccproductions.networkwidget;
+package com.ecctm.networkwidget;
 
 import java.text.DateFormat;
 
@@ -16,7 +16,7 @@ public class NetworkWidgetProvider extends AppWidgetProvider {
 	RemoteViews widgetView;
 	ComponentName networkWidget;
 	DateFormat timeFormat;
-	private final static String LOG = "com.eccproductions.networkwidget";
+	private final static String LOG = "com.ecctm.networkwidget";
 	
 	@Override
 	public void onEnabled(Context context) {

@@ -1,4 +1,4 @@
-package com.eccproductions.networkwidget;
+package com.ecctm.networkwidget;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -17,7 +17,7 @@ public class UpdateWidgetService extends Service {
 	// Variables
 	int networkId;
 	String networkName;
-	private static final String LOG = "com.eccproductions.networkwidget";
+	private static final String LOG = "com.ecctm.networkwidget";
 
 	@Override
 	public void onStart(Intent intent, int startId) {
@@ -49,7 +49,7 @@ public class UpdateWidgetService extends Service {
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
 			/*TODO:
-			 * 1) Set Network Logo from a seperate .java file, to allow easy adding of new networks.
+			 * 1) Set Network Logo from a separate .java file, to allow easy adding of new networks.
 			 * 2) Data Transfer info?
 			 * 	2a) Check if Wireless is enabled
 			 * 	2b) Get signal coverage & display on the right

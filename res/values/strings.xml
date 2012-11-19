@@ -1,18 +1,8 @@
 <resources>
 
     <string name="app_name">Network Widget</string>
-    <string name="menu_settings">Settings</string>
-    <string name="main_logo_cdesc">Application Logo</string>
-    <string name="title_activity_main">Network Widget Usage</string>
-    <string name="main_guide_title">To use this Widget:</string>
-    <string name="main_guide_usage">Open your Home Screen\nPress and hold on an empty spot\nSelect "Widgets" from the screen that appears\nThen select this Widget.</string>
-    <string name="btn_main_exit">Exit</string>
-    <string name="title_activity_preferences">Preferences</string>
-    <string name="main_guide_spacer"> </string>
-    <string name="title_activity_aboutus">About Us</string>
-    <string name="tv_aboutus_aboutus">Ecc Productions is a small independent programming team, making android apps and games :) \n \n Contact us: \n lordemmet@hotmail.com</string>
     <string name="title_widget_networkwidget">Network Widget</string>
     <string name="widget_textview_default">Current Mobile Network</string>
-    <string name="widget_imageview_cdesc">The Logo of the current Mobile Operator your device is using</string>
+    <string name="widget_imageview_cdesc">The Logo of your Current Mobile Network</string>
     
 </resources>
