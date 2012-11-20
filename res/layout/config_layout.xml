@@ -18,6 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:contentDescription="@string/app_name"
         android:src="@drawable/ic_launcher_huge" />
     </LinearLayout>
     
@@ -57,21 +58,18 @@
         android:layout_height="match_parent"
         android:orientation="horizontal" 
         android:gravity="center"
-        android:weightSum="100"
         android:layout_weight="40">
 
         <Button
             android:id="@+id/btn_configure_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
             android:text="@string/btn_configure_cancel" />
 
         <Button
             android:id="@+id/btn_configure_confirm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
             android:text="@string/btn_configure_confirm" />
         
     </LinearLayout>

@@ -3,4 +3,8 @@
     android:initialLayout="@layout/widget_net_layout"
     android:minHeight="72dip"
     android:minWidth="294dip"
+    
     android:updatePeriodMillis="0" />
+
+<!-- Place this into the gap to enable the ConfigureActivity -->
+<!-- android:configure="com.ecctm.networkwidget.ConfigureActivity" -->
