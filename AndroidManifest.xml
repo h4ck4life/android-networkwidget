@@ -15,6 +15,15 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         
+        <!-- //ConfigureActivity -->
+        <activity 
+            android:name=".ConfigureActivity"
+            android:label="@string/activity_configure_title" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        
         <!-- //WidgetReciever -->
         <receiver
             android:name=".NetworkWidgetProvider"

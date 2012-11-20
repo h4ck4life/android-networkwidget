@@ -4,5 +4,9 @@
     <string name="title_widget_networkwidget">Network Widget</string>
     <string name="widget_textview_default">Current Mobile Network</string>
     <string name="widget_imageview_cdesc">The Logo of your Current Mobile Network</string>
+    <string name="activity_configure_title">Configure Network Widget</string>
+    <string name="activity_configure_setting_frequency">Update Frequency</string>
+    <string name="btn_configure_cancel">Cancel</string>
+    <string name="btn_configure_confirm">Confirm</string>
     
 </resources>
