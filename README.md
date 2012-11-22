@@ -20,15 +20,12 @@ Features
 * Identifies current network via MNC & MCC
 * Displays current Mobile Network's logo and name on widget
 * A Configuration activity when the widget is added
-* Widget updated when touched
-
-### In Progress
-
-* Adding in options to configuration activity _(set update frequency, mode, extra features...)_
 * Widget updated on adjustable timer, only while device is active
+* Widget updated when touched
 
 ### Planned
 
+* Add in more options to configuration activity _(set background, network or wifi mode, extra features...)_
 * Show Mobile Network's signal strength _(via icon or percentage)_
 * Multiple widget sizes to accommodate extra features
 * A method of displaying information about currently connected WiFi networks _(transfer speed, signal strength)_

@@ -10,6 +10,7 @@
     <string name="widget_configure_activity_title">Configure Network Widget</string>
     <string name="widget_configure_activity_setting_">PLACEHOLDER!</string>
     <string name="widget_configure_activity_setting_frequency">Update Frequency</string>
+    <string name="widget_configure_activity_setting_frequency_default">30 Minutes</string>
     <string name="widget_configure_activity_btn_">PLACEHOLDER!</string>
     <string name="widget_configure_activity_btn_cancel">Cancel</string>
     <string name="widget_configure_activity_btn_confirm">Confirm</string>

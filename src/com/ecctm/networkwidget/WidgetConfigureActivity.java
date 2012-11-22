@@ -1,18 +1,25 @@
 package com.ecctm.networkwidget;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 public class WidgetConfigureActivity extends Activity {
 
 	// Variables
 	private int widgetId;
+	private int updateFrequencyMins;
 	private static final String LOG = "com.ecctm.networkwidget";
 
 	@Override
@@ -44,6 +51,34 @@ public class WidgetConfigureActivity extends Activity {
 		
 		// Call the layout so our configure activity is usable
 		setContentView(R.layout.widget_configure_activity_layout);
+		
+		//Set things up for our update frequency seekBar
+		updateFrequencyMins = 30;
+		final TextView frequencySeekResult = (TextView)findViewById(R.id.widget_configure_activity_setting_frequency_seekBar_result);
+		final SeekBar frequencySeek = (SeekBar)findViewById(R.id.widget_configure_activity_setting_frequency_seekBar);
+		
+		//listen to our seekbar
+		frequencySeek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+				// We range from 1 to 60 minutes (0-59 then +1)
+				updateFrequencyMins = progress + 1;
+				frequencySeekResult.setText(updateFrequencyMins + " Minutes");
+			}
+		});
 	}
 
 	public void onCancel(View source) {
@@ -61,24 +96,63 @@ public class WidgetConfigureActivity extends Activity {
 		// Log that onConfirm was called
 		Log.d(LOG, "WidgetConfigureActivity.onConfirm called.");
 		
+		//Store our configuration
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editPreferences = preferences.edit();
+		/*
+		Add config changes here - not unlike this:
+		editPreferences.putInt(WidgetProvider.EXTRA_COLOR_VALUE+"_"+widgetID, color);
+		*/
+		editPreferences.commit();
+		
 		// Call for the widgets' first update
 		Log.d(LOG, "WidgetConfigureActivity.onConfirm - Preparing first onUpdate broadcast.");
 		
 		// Setup for creating our onUpdate broadcast
 		final Context context = WidgetConfigureActivity.this;
-		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-		ComponentName thisAppWidget = new ComponentName(context.getPackageName(), WidgetConfigureActivity.class.getName());
+		//AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+		//ComponentName thisAppWidget = new ComponentName(context.getPackageName(), WidgetConfigureActivity.class.getName());
+		//int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
 		
 		// Create and package our broadcast
 		Intent firstUpdate = new Intent(context, WidgetProvider.class);
-		int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
 		firstUpdate.setAction("android.appwidget.action.APPWIDGET_UPDATE");
-		firstUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+		firstUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
 		
 		// Send our first onUpdate broadcast
 		context.sendBroadcast(firstUpdate);
 		Log.d(LOG, "WidgetConfigureActivity.onConfirm - Sent first onUpdate broadcast.");
 		
+		// TODO Make our AlarmManager
+		
+		//Create and launch the alarmManager
+		Uri.Builder uriBuilder = new Uri.Builder();
+		uriBuilder.appendPath("" + widgetId);
+		Uri uri = uriBuilder.build();
+		
+		// Create our alarmUpdate Intent
+		Intent alarmUpdate = new Intent(context, WidgetProvider.class);
+		//Set an action so we can filter it
+		alarmUpdate.setAction(WidgetProvider.UPDATE_ONE);
+		//add the instance to identify it later
+		alarmUpdate.setData(uri);
+		
+		// Add the widget's identifiers to the HashMap list
+		WidgetProvider.addUri(widgetId, uri);
+		
+		alarmUpdate.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
+		
+		//create the alarm info
+		PendingIntent pendingAlarmUpdate = PendingIntent.getBroadcast(WidgetConfigureActivity.this, 0, alarmUpdate, PendingIntent.FLAG_UPDATE_CURRENT);
+		
+		//Create Alarm
+		AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+		alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis()+((updateFrequencyMins*60)*1000), ((updateFrequencyMins*60)*1000), pendingAlarmUpdate);
+		
+		// Log that onConfirm was called
+		Log.d(LOG, "WidgetConfigureActivity.onConfirm - Created alarm.");
+		Log.d(LOG, "WidgetConfigureActivity.onConfirm - ACTION: " + WidgetProvider.UPDATE_ONE + ", URI: " + uriBuilder.build().toString() + ", Minutes: " + updateFrequencyMins);
+
 		// Return the original widgetId, found in onCreate()
 		Intent resultValue = new Intent();
 		resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
