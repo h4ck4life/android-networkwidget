@@ -1,13 +1,13 @@
 <resources>
 
     <!-- Application Strings -->
-    <string name="app_name">Test Widget</string>
+    <string name="app_name">Network Widget</string>
 
     <!-- .WidgetProvider Strings -->
-    <string name="widget_provider_title">Test Widget</string>
+    <string name="widget_provider_title">Network Widget</string>
     
     <!-- .WidgetConfigureActivity Strings -->
-    <string name="widget_configure_activity_title">Configure: Test Widget</string>
+    <string name="widget_configure_activity_title">Configure Network Widget</string>
     <string name="widget_configure_activity_setting_">PLACEHOLDER!</string>
     <string name="widget_configure_activity_setting_frequency">Update Frequency</string>
     <string name="widget_configure_activity_btn_">PLACEHOLDER!</string>

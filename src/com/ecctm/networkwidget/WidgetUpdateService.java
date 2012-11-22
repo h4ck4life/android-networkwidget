@@ -109,7 +109,7 @@ public class WidgetUpdateService extends Service {
 			Intent clickIntent = get_ACTION_APPWIDGET_UPDATE_Intent(this.getApplicationContext());
 			PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), widgetId, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 			
-			remoteViews.setOnClickPendingIntent(R.id.widget_network_layout_network_title_container, clickPendingIntent);
+			remoteViews.setOnClickPendingIntent(R.id.widget_network_layout_container, clickPendingIntent);
 			
 			Log.d(LOG, "WidgetUpdateService.onStart - Updated ID: " + widgetId);
 			
