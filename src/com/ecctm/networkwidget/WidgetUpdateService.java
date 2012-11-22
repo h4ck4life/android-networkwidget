@@ -20,7 +20,7 @@ import android.widget.RemoteViews;
  * 	2c) Get up/down speeds & display
 */
 
-public class UpdateWidgetService extends Service {
+public class WidgetUpdateService extends Service {
 
 	// Variables
 	int networkId;
@@ -30,8 +30,9 @@ public class UpdateWidgetService extends Service {
 	@Override
 	public void onStart(Intent intent, int startId) {
 		// Begin Logging
-		Log.d(LOG, "UpdateWidgetService.onStart called.");
-
+		Log.d(LOG, "WidgetUpdateService.onStart called.");
+		//super.onStart(intent, startId);
+		
 		// Set up our widget manager
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
 
@@ -39,7 +40,7 @@ public class UpdateWidgetService extends Service {
 		int[] allWidgetIds = intent.getIntArrayExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS);
 
 		// target this widget
-		ComponentName networkWidget = new ComponentName(getApplicationContext(), NetworkWidgetProvider.class);
+		ComponentName networkWidget = new ComponentName(getApplicationContext(), WidgetProvider.class);
 
 		// get ids for ALL running instances of our widget
 		int[] allWidgetIds2 = appWidgetManager.getAppWidgetIds(networkWidget);
@@ -53,8 +54,8 @@ public class UpdateWidgetService extends Service {
 			// set up TelephonyManager to get our network info
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
-			// setup our remoteview
-			RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_net_layout);
+			//Inflate the widget's layout
+			RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_network_layout);
 
 			//Check AirplaneMode
 			if(!isAirplaneModeOn(this)) {
@@ -67,66 +68,84 @@ public class UpdateWidgetService extends Service {
 				Log.w(LOG, "Get Network Info - MobileOperatorName: " + networkName);
 
 				// Set the text
-				remoteViews.setTextViewText(R.id.widget_textview, networkName);
+				remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
 
 				// Set the mobile Logo
 				switch (networkId) {
 				case 27201:
 					// Vodafone IE
-					remoteViews.setImageViewResource(R.id.widget_imageview,
+					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 							R.drawable.image_network_vodafone);
 					break;
 				case 27202:	
 					// o2 IE
-					remoteViews.setImageViewResource(R.id.widget_imageview,
+					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 							R.drawable.image_network_o2);
 					break;
 				case 27205:
 					// Three IE
-					remoteViews.setImageViewResource(R.id.widget_imageview,
+					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 							R.drawable.image_network_three);
 					break;
 				default:
 					// Unknown Network
-					remoteViews.setImageViewResource(R.id.widget_imageview,
+					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 							R.drawable.image_network_default);
 					break;
 				}
 			}
 			else {
 				// Set the text (telling us we've no network)
-				networkName = "Airplane Mode Enabled";
-				remoteViews.setTextViewText(R.id.widget_textview, networkName);
+				networkName = "" + R.string.widget_network_layout_network_title_airplane;
+				remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
 
 				// Set the default network icon
-				remoteViews.setImageViewResource(R.id.widget_imageview,
+				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 						R.drawable.image_network_default);
 
 			}
+		
+			// When User clicks on the label, update all widgets
+			Intent clickIntent = get_ACTION_APPWIDGET_UPDATE_Intent(this.getApplicationContext());
+			PendingIntent clickPendingIntent = PendingIntent.getBroadcast(this.getApplicationContext(), widgetId, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 			
-			// Register an onClickListener
-			Intent clickIntent = new Intent(this.getApplicationContext(),
-					NetworkWidgetProvider.class);
-
-			clickIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-			clickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS,
-					allWidgetIds);
-
-			PendingIntent pendingIntent = PendingIntent.getBroadcast(
-					getApplicationContext(), 0, clickIntent,
-					PendingIntent.FLAG_UPDATE_CURRENT);
-			remoteViews.setOnClickPendingIntent(R.id.widget_textview_container,
-					pendingIntent);
+			remoteViews.setOnClickPendingIntent(R.id.widget_network_layout_network_title_container, clickPendingIntent);
+			
+			Log.d(LOG, "WidgetUpdateService.onStart - Updated ID: " + widgetId);
+			
+			// Call the AppWidgetManager to make sure changes take effect
 			appWidgetManager.updateAppWidget(widgetId, remoteViews);
+			
 		}
 		stopSelf();
-
-		super.onStart(intent, startId);
 	}
 
+	/*
+	 * Utility method to ensure that when we want an Intent that fires
+	 * ACTION_APPWIDGET_UPDATE, the extras are correct.
+	 * 
+	 * The default implementation of onReceive() will discard it if we don't
+	 * add the ids of all the instances.
+	 */
+	protected Intent get_ACTION_APPWIDGET_UPDATE_Intent(Context context) {
+		// Set up AppWidgetManager and ComponentName
+		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+		ComponentName thisAppWidget = new ComponentName(context.getPackageName(), WidgetProvider.class.getName());
+
+		// Get values for appWidgetIds
+		int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+		
+		// Package and return them
+		Intent returnIntent = new Intent(context, WidgetProvider.class);
+		returnIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+		returnIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+		
+		return returnIntent;
+	}
+
+	// Get AirplaneMode status
 	private static boolean isAirplaneModeOn(Context context) {
-		//Get AirplaneMode status
-		//"True" if active
+		// Returns '1' if active
 		return Settings.System.getInt(context.getContentResolver(), Settings.System.AIRPLANE_MODE_ON, 0) != 0;
 		}
 

@@ -14,7 +14,7 @@
         android:layout_weight="40">
 
         <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/widget_configure_activity_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -29,24 +29,25 @@
         android:orientation="vertical"
         android:layout_weight="20" >
         
-        <!--  Config setup here -->
+        <!-- Configure Activity Title -->
         <TextView
-            android:id="@+id/textView1"
+            android:id="@+id/widget_configure_activity_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="@string/activity_configure_title"
+            android:text="@string/widget_configure_activity_title"
             android:textAppearance="?android:attr/textAppearanceLarge" />
-
+        
+        <!-- Configure Activity Settings -->
         <TextView
-            android:id="@+id/textView2"
+            android:id="@+id/widget_configure_activity_setting_frequency"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="15dp"
-            android:text="@string/activity_configure_setting_frequency" />
+            android:text="@string/widget_configure_activity_setting_frequency" />
 
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/widget_configure_activity_setting_frequency_spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
         
@@ -61,16 +62,17 @@
         android:layout_weight="40">
 
         <Button
-            android:id="@+id/btn_configure_cancel"
+            android:id="@+id/widget_configure_activity_btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/btn_configure_cancel" />
-
-        <Button
-            android:id="@+id/btn_configure_confirm"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/btn_configure_confirm" />
+            android:onClick="onCancel"
+            android:text="@string/widget_configure_activity_btn_cancel" />
         
-    </LinearLayout>
+        <Button
+            android:id="@+id/widget_configure_activity_btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onConfirm"
+            android:text="@string/widget_configure_activity_btn_confirm" />
+</LinearLayout>
 </LinearLayout>

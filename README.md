@@ -19,12 +19,13 @@ Features
 * Checks if device is in Airplane mode
 * Identifies current network via MNC & MCC
 * Displays current Mobile Network's logo and name on widget
-* Widget updated on 3 minute timer, only while device is active
-* Widget also updated when touched
+* A Configuration activity when the widget is added
+* Widget updated when touched
 
 ### In Progress
 
-* A Configuration activity when the widget is added _(set update frequency, mode, extra features...)_
+* Adding in options to configuration activity _(set update frequency, mode, extra features...)_
+* Widget updated on adjustable timer, only while device is active
 
 ### Planned
 

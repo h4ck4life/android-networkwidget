@@ -1,12 +1,23 @@
 <resources>
 
-    <string name="app_name">Network Widget</string>
-    <string name="title_widget_networkwidget">Network Widget</string>
-    <string name="widget_textview_default">Current Mobile Network</string>
-    <string name="widget_imageview_cdesc">The Logo of your Current Mobile Network</string>
-    <string name="activity_configure_title">Configure Network Widget</string>
-    <string name="activity_configure_setting_frequency">Update Frequency</string>
-    <string name="btn_configure_cancel">Cancel</string>
-    <string name="btn_configure_confirm">Confirm</string>
+    <!-- Application Strings -->
+    <string name="app_name">Test Widget</string>
+
+    <!-- .WidgetProvider Strings -->
+    <string name="widget_provider_title">Test Widget</string>
     
+    <!-- .WidgetConfigureActivity Strings -->
+    <string name="widget_configure_activity_title">Configure: Test Widget</string>
+    <string name="widget_configure_activity_setting_">PLACEHOLDER!</string>
+    <string name="widget_configure_activity_setting_frequency">Update Frequency</string>
+    <string name="widget_configure_activity_btn_">PLACEHOLDER!</string>
+    <string name="widget_configure_activity_btn_cancel">Cancel</string>
+    <string name="widget_configure_activity_btn_confirm">Confirm</string>
+    
+    <!-- widget_network_layout.xml Strings -->
+    <string name="widget_network_layout_">PLACEHOLDER!</string>
+    <string name="widget_network_layout_network_logo_desc">The Logo of your Current Mobile Network</string>
+    <string name="widget_network_layout_network_title_default">Searching for Mobile Network</string>
+    <string name="widget_network_layout_network_title_airplane">Airplane Mode ON</string>
+
 </resources>

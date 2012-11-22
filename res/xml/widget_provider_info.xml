@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- 4x1 Widget -->
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:initialLayout="@layout/widget_network_layout"
+    android:minHeight="72dip"
+    android:minWidth="294dip"
+    android:configure="com.ecctm.networkwidget.WidgetConfigureActivity"
+    android:updatePeriodMillis="180000" >
+</appwidget-provider>
