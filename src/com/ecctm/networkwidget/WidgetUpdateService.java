@@ -60,7 +60,6 @@ public class WidgetUpdateService extends Service {
 			Log.d(LOG, "WidgetUpdateService.onStart - received preferences.");
 			Log.d(LOG, "WidgetUpdateService.onStart - WidgetBackgroundRes = " + WidgetBackgroundRes);
 			
-
 			// set up TelephonyManager to get our network info
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -76,18 +75,19 @@ public class WidgetUpdateService extends Service {
 				remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_network_layout_dark);
 			}
 
-			//Set the background
-			//remoteViews.setImageViewResource(R.id.widget_network_layout_container, WidgetBackgroundRes);
+			//TODO add check if phone uses a simcard, then for simcard presence
 			
 			//Check AirplaneMode
 			if(!isAirplaneModeOn(this)) {
+				// Log that Airplane mode is OFF
+				Log.d(LOG, "WidgetUpdateService.onStart - Airplane Mode OFF.");
+
 				// Its off, we have networks, so...
-				
 				// Get info about currently connected network
 				networkId = Integer.parseInt(telephonyManager.getNetworkOperator());
 				networkName = telephonyManager.getNetworkOperatorName();
-				Log.w(LOG, "Get Network Info - MobileOperatorID: " + networkId);
-				Log.w(LOG, "Get Network Info - MobileOperatorName: " + networkName);
+				Log.d(LOG, "Get Network Info - MobileOperatorID: " + networkId);
+				Log.d(LOG, "Get Network Info - MobileOperatorName: " + networkName);
 
 				// Set the text
 				remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
@@ -133,14 +133,16 @@ public class WidgetUpdateService extends Service {
 				}
 			}
 			else {
+				// Log that Airplane mode is ON
+				Log.d(LOG, "WidgetUpdateService.onStart - Airplane Mode ON.");
+
 				// Set the text (telling us we've no network)
-				networkName = "" + R.string.widget_network_layout_network_title_airplane;
+				networkName = getString(R.string.widget_network_layout_network_title_airplane);
 				remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
 
 				// Set the default network icon
 				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 						R.drawable.image_network_default);
-
 			}
 		
 			// When User clicks on the label, update all widgets
