@@ -25,5 +25,6 @@
     <string name="widget_network_layout_network_logo_desc">The Logo of your Current Mobile Network</string>
     <string name="widget_network_layout_network_title_default">Searching for Mobile Network</string>
     <string name="widget_network_layout_network_title_airplane">Airplane Mode ON</string>
+    <string name="widget_network_layout_network_title_simcard">Sim Card Absent</string>
 
 </resources>

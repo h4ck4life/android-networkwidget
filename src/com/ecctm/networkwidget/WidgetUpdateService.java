@@ -75,75 +75,93 @@ public class WidgetUpdateService extends Service {
 				remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_network_layout_dark);
 			}
 
-			//TODO add check if phone uses a simcard, then for simcard presence
-			
-			//Check AirplaneMode
-			if(!isAirplaneModeOn(this)) {
-				// Log that Airplane mode is OFF
-				Log.d(LOG, "WidgetUpdateService.onStart - Airplane Mode OFF.");
+			//TODO make sure we're calling this with the correct type of phone
+			//Check if a sim card is present
+			if (telephonyManager.getSimState() != TelephonyManager.SIM_STATE_ABSENT) {
+				// Log that Sim card is present
+				Log.d(LOG, "WidgetUpdateService.onStart - Sim card present.");
+				
+				//Check AirplaneMode
+				if(!isAirplaneModeOn(this)) {
+					// Log that Airplane mode is OFF
+					Log.d(LOG, "WidgetUpdateService.onStart - Airplane Mode OFF.");
 
-				// Its off, we have networks, so...
-				// Get info about currently connected network
-				networkId = Integer.parseInt(telephonyManager.getNetworkOperator());
-				networkName = telephonyManager.getNetworkOperatorName();
-				Log.d(LOG, "Get Network Info - MobileOperatorID: " + networkId);
-				Log.d(LOG, "Get Network Info - MobileOperatorName: " + networkName);
+					// Its off, we have networks, so...
+					// Get info about currently connected network
+					networkId = Integer.parseInt(telephonyManager.getNetworkOperator());
+					networkName = telephonyManager.getNetworkOperatorName();
+					Log.d(LOG, "Get Network Info - MobileOperatorID: " + networkId);
+					Log.d(LOG, "Get Network Info - MobileOperatorName: " + networkName);
 
-				// Set the text
-				remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
+					// Set the text
+					remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
 
-				// Set the mobile Logo
-				switch (networkId) {
-				case 27201: // Vodafone IE
-				case 23403: // Airtel-Vodafone GB
-				case 23415: // Vodafone GB
-				case 23591:
-					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
-							R.drawable.image_network_vodafone);
-					break;
-				case 27202: // o2 IE
-				case 23402: // o2 GB
-				case 23410:
-				case 23411:
-					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
-							R.drawable.image_network_o2);
-					break;
-				case 27205: // Three IE
-				case 23420: // Three GB
-				case 23594:
-					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
-							R.drawable.image_network_three);
-					break;
-				case 23433: // Orange GB
-				case 23434:
-				case 23501:
-				case 23502:
-					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
-							R.drawable.image_network_orange);
-					break;
-				case 23430: // T-Mobile GB
-					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
-							R.drawable.image_network_tmobile);
-					break;
-				default:
-					// Unknown Network
+					// Set the mobile Logo
+					switch (networkId) {
+					case 27201: // Vodafone IE
+					case 23403: // Airtel-Vodafone GB
+					case 23415: // Vodafone GB
+					case 23591:
+						remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
+								R.drawable.image_network_vodafone);
+						break;
+					case 27202: // o2 IE
+					case 23402: // o2 GB
+					case 23410:
+					case 23411:
+						remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
+								R.drawable.image_network_o2);
+						break;
+					case 27205: // Three IE
+					case 23420: // Three GB
+					case 23594:
+						remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
+								R.drawable.image_network_three);
+						break;
+					case 23433: // Orange GB
+					case 23434:
+					case 23501:
+					case 23502:
+						remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
+								R.drawable.image_network_orange);
+						break;
+					case 23430: // T-Mobile GB
+						remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
+								R.drawable.image_network_tmobile);
+						break;
+					default:
+						// Unknown Network
+						remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
+								R.drawable.image_network_default);
+						break;
+					}
+				}
+				else {
+					// Log that Airplane mode is ON
+					Log.d(LOG, "WidgetUpdateService.onStart - Airplane Mode ON.");
+
+					// Set the text (telling us were in airplane mode)
+					networkName = getString(R.string.widget_network_layout_network_title_airplane);
+					remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
+
+					// Set the default network icon
 					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 							R.drawable.image_network_default);
-					break;
 				}
 			}
 			else {
-				// Log that Airplane mode is ON
-				Log.d(LOG, "WidgetUpdateService.onStart - Airplane Mode ON.");
+				// Log that Sim card is absent
+				Log.d(LOG, "WidgetUpdateService.onStart - Sim card absent.");
 
-				// Set the text (telling us we've no network)
-				networkName = getString(R.string.widget_network_layout_network_title_airplane);
+				// Set the text (telling us we've no sim card)
+				networkName = getString(R.string.widget_network_layout_network_title_simcard);
 				remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
 
 				// Set the default network icon
 				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 						R.drawable.image_network_default);
-			}
+				}
+
 		
 			// When User clicks on the label, update all widgets
 			Intent clickIntent = get_ACTION_APPWIDGET_UPDATE_Intent(this.getApplicationContext());
