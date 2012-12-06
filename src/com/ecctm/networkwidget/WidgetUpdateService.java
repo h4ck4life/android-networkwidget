@@ -94,20 +94,36 @@ public class WidgetUpdateService extends Service {
 
 				// Set the mobile Logo
 				switch (networkId) {
-				case 27201:
-					// Vodafone IE
+				case 27201: // Vodafone IE
+				case 23403: // Airtel-Vodafone GB
+				case 23415: // Vodafone GB
+				case 23591:
 					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 							R.drawable.image_network_vodafone);
 					break;
-				case 27202:	
-					// o2 IE
+				case 27202: // o2 IE
+				case 23402: // o2 GB
+				case 23410:
+				case 23411:
 					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 							R.drawable.image_network_o2);
 					break;
-				case 27205:
-					// Three IE
+				case 27205: // Three IE
+				case 23420: // Three GB
+				case 23594:
 					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
 							R.drawable.image_network_three);
+					break;
+				case 23433: // Orange GB
+				case 23434:
+				case 23501:
+				case 23502:
+					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
+							R.drawable.image_network_orange);
+					break;
+				case 23430: // T-Mobile GB
+					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo,
+							R.drawable.image_network_tmobile);
 					break;
 				default:
 					// Unknown Network
