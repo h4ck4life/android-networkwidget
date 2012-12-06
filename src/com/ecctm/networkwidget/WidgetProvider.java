@@ -17,6 +17,8 @@ public class WidgetProvider extends AppWidgetProvider {
 	//Variables
 	private static final String LOG = "com.ecctm.networkwidget";
 	public static final String UPDATE_ONE = "com.ecctm.networkwidget.UPDATE_ONE_WIDGET";
+	public static final int WIDGET_BACKGROUND_VALUE = R.drawable.appwidget_dark_bg;
+	
 	private static HashMap<Integer, Uri> uris = new HashMap<Integer, Uri>();
 	
 	@Override

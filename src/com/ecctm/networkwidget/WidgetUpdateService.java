@@ -6,7 +6,9 @@ import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -25,6 +27,7 @@ public class WidgetUpdateService extends Service {
 	// Variables
 	int networkId;
 	String networkName;
+	RemoteViews remoteViews;
 	private static final String LOG = "com.ecctm.networkwidget";
 
 	@Override
@@ -32,7 +35,7 @@ public class WidgetUpdateService extends Service {
 		// Begin Logging
 		Log.d(LOG, "WidgetUpdateService.onStart called.");
 		//super.onStart(intent, startId);
-		
+
 		// Set up our widget manager
 		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this.getApplicationContext());
 
@@ -51,12 +54,31 @@ public class WidgetUpdateService extends Service {
 
 		// begin our update
 		for (int widgetId : allWidgetIds) {
+			//Get our set preferences
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+			int WidgetBackgroundRes = preferences.getInt(WidgetProvider.WIDGET_BACKGROUND_VALUE + "_" + widgetId, 0);
+			Log.d(LOG, "WidgetUpdateService.onStart - received preferences.");
+			Log.d(LOG, "WidgetUpdateService.onStart - WidgetBackgroundRes = " + WidgetBackgroundRes);
+			
+
 			// set up TelephonyManager to get our network info
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
-			//Inflate the widget's layout
-			RemoteViews remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_network_layout);
+			//check which layout we're using
+			if(WidgetBackgroundRes == 1)
+			{
+				//Inflate the widget's light layout
+				remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_network_layout_light);
+			}
+			else
+			{
+				//Inflate the widget's dark layout
+				remoteViews = new RemoteViews(this.getApplicationContext().getPackageName(), R.layout.widget_network_layout_dark);
+			}
 
+			//Set the background
+			//remoteViews.setImageViewResource(R.id.widget_network_layout_container, WidgetBackgroundRes);
+			
 			//Check AirplaneMode
 			if(!isAirplaneModeOn(this)) {
 				// Its off, we have networks, so...

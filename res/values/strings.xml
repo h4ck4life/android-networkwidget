@@ -11,6 +11,11 @@
     <string name="widget_configure_activity_setting_">PLACEHOLDER!</string>
     <string name="widget_configure_activity_setting_frequency">Update Frequency</string>
     <string name="widget_configure_activity_setting_frequency_default">30 Minutes</string>
+    <string name="widget_configure_activity_setting_background">Widget Background</string>
+    <string name="widget_configure_activity_setting_background_radio_">PLACEHOLDER!</string>
+    <string name="widget_configure_activity_setting_background_radio_dark">Dark</string>
+    <string name="widget_configure_activity_setting_background_radio_light">Light</string>
+    
     <string name="widget_configure_activity_btn_">PLACEHOLDER!</string>
     <string name="widget_configure_activity_btn_cancel">Cancel</string>
     <string name="widget_configure_activity_btn_confirm">Confirm</string>

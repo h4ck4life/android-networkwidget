@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -91,6 +92,39 @@ public class WidgetConfigureActivity extends Activity {
 		finish();
 	}
 	
+	public void onRadioButtonClicked(View view) {
+		// Log that onRadioButtonClicked was called
+		Log.d(LOG, "WidgetConfigureActivity.onRadioButtonClicked called.");
+
+		//load up the preferences list
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+		SharedPreferences.Editor editPreferences = preferences.edit();
+		
+		// Is the button now checked?
+	    boolean checked = ((RadioButton) view).isChecked();
+	    
+	    // Check which radio button was clicked
+	    switch(view.getId()) {
+	        case R.id.widget_configure_activity_setting_background_radio_dark:
+	            if (checked){
+	            	// We've selected a Dark widget background
+	        		Log.d(LOG, "WidgetConfigureActivity.onRadioButtonClicked - Dark Widget");
+
+	            	editPreferences.putInt(WidgetProvider.WIDGET_BACKGROUND_VALUE+"_"+widgetId, 0);
+	            }
+	            break;
+	        case R.id.widget_configure_activity_setting_background_radio_light:
+	            if (checked) {
+	                // We've selected a Light widget background
+	        		Log.d(LOG, "WidgetConfigureActivity.onRadioButtonClicked - Light Widget");
+	        		
+	        		editPreferences.putInt(WidgetProvider.WIDGET_BACKGROUND_VALUE+"_"+widgetId, 1);
+	            }
+	            break;
+	    }
+	    //close and save our preferences now we're done with them
+		editPreferences.commit();
+	}
 	
 	public void onConfirm(View source) {
 		// Log that onConfirm was called
