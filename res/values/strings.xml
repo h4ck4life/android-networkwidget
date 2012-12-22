@@ -22,7 +22,7 @@
     
     <!-- widget_network_layout.xml Strings -->
     <string name="widget_network_layout_">PLACEHOLDER!</string>
-    <string name="widget_network_layout_network_logo_desc">The Logo of your Current Mobile Network</string>
+    <string name="widget_network_layout_network_logo_desc">Logo of your Current Mobile Network</string>
     <string name="widget_network_layout_network_title_default">Searching for Mobile Network</string>
     <string name="widget_network_layout_network_title_airplane">Airplane Mode ON</string>
     <string name="widget_network_layout_network_title_simcard_absent">Sim Card Absent!</string>

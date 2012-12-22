@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_margin="8dip"
-    android:background="@drawable/appwidget_dark_bg"
+    android:background="@drawable/dark_layout_bg"
     android:baselineAligned="false"
     android:orientation="horizontal"
     android:weightSum="100" >

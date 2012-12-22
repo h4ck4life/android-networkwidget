@@ -7,6 +7,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -29,7 +31,7 @@ public class WidgetUpdateService extends Service
 
 	// Variables
 	int networkId;
-	String networkName, airplaneModeOn, simLocked, simUnknown, simAbsent;
+	String networkName, netConnecting, airplaneModeOn, simLocked, simUnknown, simAbsent;
 	RemoteViews remoteViews;
 	private static final String LOG = "com.ecctm.networkwidget";
 
@@ -65,8 +67,11 @@ public class WidgetUpdateService extends Service
 			Log.d(LOG, "WidgetUpdateService.onStart - received preferences.");
 			Log.d(LOG, "WidgetUpdateService.onStart - WidgetBackgroundRes = " + WidgetBackgroundRes);
 
-			// set up TelephonyManager to get our network info
+			// set up TelephonyManager, ConnectivityManager & NetworkInfo to
+			// check our network info
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+			ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
 			// check which layout we're using
 			if (WidgetBackgroundRes == 1)
@@ -99,48 +104,67 @@ public class WidgetUpdateService extends Service
 						// Log that Sim card is ready (and connected)
 						Log.d(LOG, "WidgetUpdateService.onStart - Sim Card Ready.");
 
-						// Get info about currently connected network
-						networkId = Integer.parseInt(telephonyManager.getNetworkOperator());
-						networkName = telephonyManager.getNetworkOperatorName();
-						Log.d(LOG, "Get Network Info - MobileOperatorID: " + networkId);
-						Log.d(LOG, "Get Network Info - MobileOperatorName: " + networkName);
-
-						// Set the text
-						remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
-
-						// Set the mobile Logo
-						switch (networkId)
+						// Check we have a network connection
+						if (networkInfo != null && networkInfo.isConnected())
 						{
-							case 27201: // Vodafone IE
-							case 23403: // Airtel-Vodafone UK
-							case 23415: // Vodafone UK
-							case 23591:
-								remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_vodafone);
-								break;
-							case 27202: // o2 IE
-							case 23402: // o2 UK
-							case 23410:
-							case 23411:
-								remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_o2);
-								break;
-							case 27205: // Three IE
-							case 23420: // Three UK
-							case 23594:
-								remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_three);
-								break;
-							case 23433: // Orange UK
-							case 23434:
-							case 23501:
-							case 23502:
-								remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_orange);
-								break;
-							case 23430: // T-Mobile UK
-								remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_tmobile);
-								break;
-							default:
-								// Unknown Network
-								remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
-								break;
+							// Log that network connection is present
+							Log.d(LOG, "WidgetUpdateService.onStart - Network connected.");
+							
+							// Get info about currently connected network
+							networkId = Integer.parseInt(telephonyManager.getNetworkOperator());
+							networkName = telephonyManager.getNetworkOperatorName();
+							Log.d(LOG, "MobileOperatorID: " + networkId);
+							Log.d(LOG, "MobileOperatorName: " + networkName);
+
+							// Set the text
+							remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
+
+							// Set the mobile Logo
+							switch (networkId)
+							{
+								case 27201: // Vodafone IE
+								case 23403: // Airtel-Vodafone UK
+								case 23415: // Vodafone UK
+								case 23591:
+									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_vodafone);
+									break;
+								case 27202: // o2 IE
+								case 23402: // o2 UK
+								case 23410:
+								case 23411:
+									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_o2);
+									break;
+								case 27205: // Three IE
+								case 23420: // Three UK
+								case 23594:
+									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_three);
+									break;
+								case 23433: // Orange UK
+								case 23434:
+								case 23501:
+								case 23502:
+									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_orange);
+									break;
+								case 23430: // T-Mobile UK
+									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_tmobile);
+									break;
+								default:
+									// Unknown Network
+									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
+									break;
+							}
+						}
+						else
+						{
+							// Log that network connection isn't present
+							Log.d(LOG, "WidgetUpdateService.onStart - No Network connected.");
+
+							// Set the text (telling us we've no sim card)
+							netConnecting = getString(R.string.widget_network_layout_network_title_default);
+							remoteViews.setTextViewText(R.id.widget_network_layout_network_title, netConnecting);
+
+							// Set the default network icon
+							remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
 						}
 					}
 					else if (telephonyManager.getSimState() == TelephonyManager.SIM_STATE_PIN_REQUIRED)
@@ -239,7 +263,7 @@ public class WidgetUpdateService extends Service
 		return returnIntent;
 	}
 
-	//Required IBinder method
+	// Required IBinder method
 	@Override
 	public IBinder onBind(Intent intent)
 	{
