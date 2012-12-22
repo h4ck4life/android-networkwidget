@@ -31,7 +31,8 @@ public class WidgetUpdateService extends Service
 
 	// Variables
 	int networkId;
-	String networkName, netConnecting, airplaneModeOn, simLocked, simUnknown, simAbsent;
+	String networkName, netConnecting, airplaneModeOn, simLocked, simUnknown,
+			simAbsent;
 	RemoteViews remoteViews;
 	private static final String LOG = "com.ecctm.networkwidget";
 
@@ -86,6 +87,7 @@ public class WidgetUpdateService extends Service
 			}
 
 			// TODO make sure we're calling this with the correct type of phone
+
 			// Check if a sim card is present
 			if (telephonyManager.getSimState() != TelephonyManager.SIM_STATE_ABSENT)
 			{
@@ -104,12 +106,8 @@ public class WidgetUpdateService extends Service
 						// Log that Sim card is ready (and connected)
 						Log.d(LOG, "WidgetUpdateService.onStart - Sim Card Ready.");
 
-						// Check we have a network connection
-						if (networkInfo != null && networkInfo.isConnected())
+						try
 						{
-							// Log that network connection is present
-							Log.d(LOG, "WidgetUpdateService.onStart - Network connected.");
-							
 							// Get info about currently connected network
 							networkId = Integer.parseInt(telephonyManager.getNetworkOperator());
 							networkName = telephonyManager.getNetworkOperatorName();
@@ -154,17 +152,10 @@ public class WidgetUpdateService extends Service
 									break;
 							}
 						}
-						else
+						catch (Exception e)
 						{
-							// Log that network connection isn't present
-							Log.d(LOG, "WidgetUpdateService.onStart - No Network connected.");
-
-							// Set the text (telling us we've no sim card)
-							netConnecting = getString(R.string.widget_network_layout_network_title_default);
-							remoteViews.setTextViewText(R.id.widget_network_layout_network_title, netConnecting);
-
-							// Set the default network icon
-							remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
+							// Log our error!
+							Log.d(LOG, "WidgetUpdateService.onStart - Exception: " + e.getMessage());
 						}
 					}
 					else if (telephonyManager.getSimState() == TelephonyManager.SIM_STATE_PIN_REQUIRED)
