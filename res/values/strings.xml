@@ -25,6 +25,7 @@
     <string name="widget_network_layout_network_logo_desc">Logo of your Current Mobile Network</string>
     <string name="widget_network_layout_network_title_default">Searching for Mobile Network</string>
     <string name="widget_network_layout_network_title_airplane">Airplane Mode ON</string>
+    <string name="widget_network_layout_network_title_unsupported">Mobile Type Unsupported</string>
     <string name="widget_network_layout_network_title_simcard_absent">Sim Card Absent!</string>
     <string name="widget_network_layout_network_title_simcard_locked">Sim Card is PIN Locked!</string>
 

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:weightSum="100" >
+
+    <!-- Network Widget logo -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="80"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/widget_configure_activity_logo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/ic_launcher_huge" />
+    </LinearLayout>
+
+    <!-- Network Widget Config -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="20"
+        android:orientation="vertical" >
+
+        <!-- Configure Activity Settings -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="top"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/widget_configure_activity_setting_frequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingTop="15dp"
+                android:text="@string/widget_configure_activity_setting_frequency"
+                android:textStyle="bold" />
+
+            <SeekBar
+                android:id="@+id/widget_configure_activity_setting_frequency_seekBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="59"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:progress="29" />
+
+            <TextView
+                android:id="@+id/widget_configure_activity_setting_frequency_seekBar_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:text="@string/widget_configure_activity_setting_frequency_default" />
+
+            <TextView
+                android:id="@+id/widget_configure_activity_setting_background"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="5dp"
+                android:paddingTop="15dp"
+                android:text="@string/widget_configure_activity_setting_background"
+                android:textStyle="bold" />
+
+            <RadioGroup
+                android:id="@+id/widget_configure_activity_setting_background_radio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/widget_configure_activity_setting_background_radio_dark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:drawableRight="@drawable/appwidget_dark_bg"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/widget_configure_activity_setting_background_radio_dark" />
+
+                <RadioButton
+                    android:id="@+id/widget_configure_activity_setting_background_radio_light"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/appwidget_bg"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/widget_configure_activity_setting_background_radio_light" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <!-- Cancel & Confirm buttons -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom|center"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/widget_configure_activity_btn_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onCancel"
+                android:text="@string/widget_configure_activity_btn_cancel" />
+
+            <Button
+                android:id="@+id/widget_configure_activity_btn_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="onConfirm"
+                android:text="@string/widget_configure_activity_btn_confirm" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

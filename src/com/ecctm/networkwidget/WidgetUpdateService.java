@@ -1,5 +1,7 @@
 package com.ecctm.networkwidget;
 
+import java.lang.reflect.Method;
+
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
@@ -7,8 +9,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -31,8 +31,7 @@ public class WidgetUpdateService extends Service
 
 	// Variables
 	int networkId;
-	String networkName, netConnecting, airplaneModeOn, simLocked, simUnknown,
-			simAbsent;
+	String networkName, airplaneModeOn, simLocked, simUnknown, simAbsent;
 	RemoteViews remoteViews;
 	private static final String LOG = "com.ecctm.networkwidget";
 
@@ -71,8 +70,6 @@ public class WidgetUpdateService extends Service
 			// set up TelephonyManager, ConnectivityManager & NetworkInfo to
 			// check our network info
 			TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-			ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
 
 			// check which layout we're using
 			if (WidgetBackgroundRes == 1)
@@ -88,11 +85,106 @@ public class WidgetUpdateService extends Service
 
 			// TODO make sure we're calling this with the correct type of phone
 
-			// Check if a sim card is present
-			if (telephonyManager.getSimState() != TelephonyManager.SIM_STATE_ABSENT)
+			// if phone type == GSM
+			if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_GSM)
 			{
-				// Log that Sim card is present
-				Log.d(LOG, "WidgetUpdateService.onStart - Sim card present.");
+				// Log that Phone Type is GSM
+				Log.d(LOG, "WidgetUpdateService.onStart - Phone Type: GSM");
+
+				// Check if a sim card is present
+				if (telephonyManager.getSimState() != TelephonyManager.SIM_STATE_ABSENT)
+				{
+					// Log that Sim card is present
+					Log.d(LOG, "WidgetUpdateService.onStart - Sim card present.");
+
+					// Check AirplaneMode
+					if (!isAirplaneModeOn(this))
+					{
+						// Log that Airplane mode is OFF
+						Log.d(LOG, "WidgetUpdateService.onStart - Airplane Mode OFF.");
+
+						// Check if sim card is ready!
+						if (telephonyManager.getSimState() == TelephonyManager.SIM_STATE_READY)
+						{
+							// Log that Sim card is ready (and connected)
+							Log.d(LOG, "WidgetUpdateService.onStart - Sim Card Ready.");
+
+							try
+							{
+								// Get info about currently connected network
+								int networkId = Integer.parseInt(telephonyManager.getNetworkOperator());
+								networkName = telephonyManager.getNetworkOperatorName();
+								Log.d(LOG, "MobileOperatorID: " + networkId);
+								Log.d(LOG, "MobileOperatorName: " + networkName);
+
+								// Set the text
+								remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
+
+								// Set the mobile Logo
+								setNetworkLogo(networkId);
+							}
+							catch (Exception e)
+							{
+								// Log our error!
+								Log.d(LOG, "WidgetUpdateService.onStart - Exception: " + e.getMessage());
+							}
+						}
+						else if (telephonyManager.getSimState() == TelephonyManager.SIM_STATE_PIN_REQUIRED)
+						{
+							// Log that Sim requires PIN
+							Log.d(LOG, "WidgetUpdateService.onStart - Sim is PIN Locked.");
+
+							// Set the text (telling us we've no sim card)
+							simLocked = getString(R.string.widget_network_layout_network_title_simcard_locked);
+							remoteViews.setTextViewText(R.id.widget_network_layout_network_title, simLocked);
+
+							// Set the default network icon
+							setNetworkLogo(0);
+						}
+						else
+						{
+							// Log that Sim state is probably Unknown
+							Log.d(LOG, "WidgetUpdateService.onStart - Sim state Unknown.");
+
+							// Set the text (telling us we've no sim card)
+							simUnknown = getString(R.string.widget_network_layout_network_title_default);
+							remoteViews.setTextViewText(R.id.widget_network_layout_network_title, simUnknown);
+
+							// Set the default network icon
+							setNetworkLogo(0);
+						}
+					}
+					else
+					{
+						// Log that Airplane mode is ON
+						Log.d(LOG, "WidgetUpdateService.onStart - Airplane Mode ON.");
+
+						// Set the text (telling us were in airplane mode)
+						airplaneModeOn = getString(R.string.widget_network_layout_network_title_airplane);
+						remoteViews.setTextViewText(R.id.widget_network_layout_network_title, airplaneModeOn);
+
+						// Set the default network icon
+						setNetworkLogo(0);
+					}
+				}
+				else
+				{
+					// Log that Sim card is absent
+					Log.d(LOG, "WidgetUpdateService.onStart - Sim card absent.");
+
+					// Set the text (telling us we've no sim card)
+					simAbsent = getString(R.string.widget_network_layout_network_title_simcard_absent);
+					remoteViews.setTextViewText(R.id.widget_network_layout_network_title, simAbsent);
+
+					// Set the default network icon
+					setNetworkLogo(0);
+				}
+			}
+			// else (phone type == CDMA) so get info for that type
+			else if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA)
+			{
+				// Log that Phone Type is GSM
+				Log.d(LOG, "WidgetUpdateService.onStart - Phone Type: CDMA");
 
 				// Check AirplaneMode
 				if (!isAirplaneModeOn(this))
@@ -100,87 +192,26 @@ public class WidgetUpdateService extends Service
 					// Log that Airplane mode is OFF
 					Log.d(LOG, "WidgetUpdateService.onStart - Airplane Mode OFF.");
 
-					// Check if sim card is ready!
-					if (telephonyManager.getSimState() == TelephonyManager.SIM_STATE_READY)
+					try
 					{
-						// Log that Sim card is ready (and connected)
-						Log.d(LOG, "WidgetUpdateService.onStart - Sim Card Ready.");
+						// Set up a Java Reflection to get access to our
+						// identifiers
+						Class<?> c = Class.forName("android.os.SystemProperties");
+						Method getCDMA = c.getMethod("get", String.class);
 
-						try
-						{
-							// Get info about currently connected network
-							networkId = Integer.parseInt(telephonyManager.getNetworkOperator());
-							networkName = telephonyManager.getNetworkOperatorName();
-							Log.d(LOG, "MobileOperatorID: " + networkId);
-							Log.d(LOG, "MobileOperatorName: " + networkName);
+						// get values
+						networkId = (Integer.parseInt((String) getCDMA.invoke(c, "ro.cdma.home.operator.numeric")));
+						networkName = ((String) getCDMA.invoke(c, "ro.cdma.home.operator.alpha"));
 
-							// Set the text
-							remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
+						// Set the text
+						remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
 
-							// Set the mobile Logo
-							switch (networkId)
-							{
-								case 27201: // Vodafone IE
-								case 23403: // Airtel-Vodafone UK
-								case 23415: // Vodafone UK
-								case 23591:
-									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_vodafone);
-									break;
-								case 27202: // o2 IE
-								case 23402: // o2 UK
-								case 23410:
-								case 23411:
-									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_o2);
-									break;
-								case 27205: // Three IE
-								case 23420: // Three UK
-								case 23594:
-									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_three);
-									break;
-								case 23433: // Orange UK
-								case 23434:
-								case 23501:
-								case 23502:
-									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_orange);
-									break;
-								case 23430: // T-Mobile UK
-									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_tmobile);
-									break;
-								default:
-									// Unknown Network
-									remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
-									break;
-							}
-						}
-						catch (Exception e)
-						{
-							// Log our error!
-							Log.d(LOG, "WidgetUpdateService.onStart - Exception: " + e.getMessage());
-						}
+						// Set the mobile Logo
+						setNetworkLogo(networkId);
 					}
-					else if (telephonyManager.getSimState() == TelephonyManager.SIM_STATE_PIN_REQUIRED)
+					catch (Exception e)
 					{
-						// Log that Sim requires PIN
-						Log.d(LOG, "WidgetUpdateService.onStart - Sim is PIN Locked.");
-
-						// Set the text (telling us we've no sim card)
-						simLocked = getString(R.string.widget_network_layout_network_title_simcard_locked);
-						remoteViews.setTextViewText(R.id.widget_network_layout_network_title, simLocked);
-
-						// Set the default network icon
-						remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
-					}
-					else
-					{
-						// Log that Sim state is probably Unknown
-						Log.d(LOG, "WidgetUpdateService.onStart - Sim state Unknown.");
-
-						// Set the text (telling us we've no sim card)
-						simUnknown = getString(R.string.widget_network_layout_network_title_default);
-						remoteViews.setTextViewText(R.id.widget_network_layout_network_title, simUnknown);
-
-						// Set the default network icon
-						remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
+						Log.d(LOG, "WidgetUpdateService.onStart - Exception: " + e.getMessage());
 					}
 				}
 				else
@@ -193,20 +224,19 @@ public class WidgetUpdateService extends Service
 					remoteViews.setTextViewText(R.id.widget_network_layout_network_title, airplaneModeOn);
 
 					// Set the default network icon
-					remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
+					setNetworkLogo(0);
 				}
 			}
 			else
 			{
-				// Log that Sim card is absent
-				Log.d(LOG, "WidgetUpdateService.onStart - Sim card absent.");
+				// phone unsupported
+				networkName = getString(R.string.widget_network_layout_network_title_unsupported);
 
-				// Set the text (telling us we've no sim card)
-				simAbsent = getString(R.string.widget_network_layout_network_title_simcard_absent);
-				remoteViews.setTextViewText(R.id.widget_network_layout_network_title, simAbsent);
-
+				// Set the text
+				remoteViews.setTextViewText(R.id.widget_network_layout_network_title, networkName);
+				
 				// Set the default network icon
-				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
+				setNetworkLogo(0);
 			}
 
 			// When User clicks on the label, update all widgets
@@ -221,6 +251,46 @@ public class WidgetUpdateService extends Service
 			appWidgetManager.updateAppWidget(widgetId, remoteViews);
 		}
 		stopSelf();
+	}
+
+	// SetNetworkLogo( MMC+MNC )
+	private void setNetworkLogo(int netID)
+	{
+		// TODO add more network logos!
+		switch (netID)
+		{
+			case 27201: // Vodafone IE
+			case 23403: // Airtel-Vodafone UK
+			case 23415: // Vodafone UK
+			case 23591:
+				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_vodafone);
+				break;
+			case 27202: // o2 IE
+			case 23402: // o2 UK
+			case 23410:
+			case 23411:
+				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_o2);
+				break;
+			case 27205: // Three IE
+			case 23420: // Three UK
+			case 23594:
+				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_three);
+				break;
+			case 23433: // Orange UK
+			case 23434:
+			case 23501:
+			case 23502:
+				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_orange);
+				break;
+			case 23430: // T-Mobile UK
+				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_tmobile);
+				break;
+			case 0:
+			default:
+				// Unknown Network
+				remoteViews.setImageViewResource(R.id.widget_network_layout_network_logo, R.drawable.image_network_default);
+				break;
+		}
 	}
 
 	// Get AirplaneMode status

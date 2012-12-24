@@ -11,7 +11,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -30,6 +33,9 @@ public class WidgetConfigureActivity extends Activity
 		Log.d(LOG, "WidgetConfigureActivity.onCreate called.");
 		super.onCreate(savedInstanceState);
 
+		//tidy the title bar depending on orientation
+		setTitleBar();
+		
 		// Set our widgetId to an invalid (temporary) ID
 		widgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
 
@@ -82,6 +88,24 @@ public class WidgetConfigureActivity extends Activity
 				frequencySeekResult.setText(updateFrequencyMins + " Minutes");
 			}
 		});
+	}
+
+	public void setTitleBar()
+	{
+		// Setup
+		Display display = ((WindowManager)this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		int width, height;
+		
+		// Get screen width & height
+		width = display.getWidth();
+		height = display.getHeight();
+		
+		//check for Portrait mode
+		if(height > width)
+		{
+			//Currently Portrait - disable titleBar
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}
 	}
 
 	public void onCancel(View source)
