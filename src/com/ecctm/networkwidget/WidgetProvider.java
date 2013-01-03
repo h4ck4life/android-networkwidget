@@ -9,7 +9,9 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class WidgetProvider extends AppWidgetProvider
@@ -20,6 +22,7 @@ public class WidgetProvider extends AppWidgetProvider
 	private static HashMap<Integer, Uri> uris = new HashMap<Integer, Uri>();
 	public static final String UPDATE_ONE = "com.ecctm.networkwidget.UPDATE_ONE_WIDGET";
 	public static final int WIDGET_BACKGROUND_VALUE = R.drawable.appwidget_dark_bg;
+	public static final boolean WIDGET_CONFIGURED_VALUE = false;
 
 	@Override
 	public void onEnabled(Context context)
@@ -71,12 +74,28 @@ public class WidgetProvider extends AppWidgetProvider
 	{
 		// Log that onUpdate was called
 		Log.d(LOG, "WidgetProvider.onUpdate called.");
+		
+		// TODO add some checks to see if we're updating all widgets or just one
+		// via a .appWidgetIds.length check
 		Log.d(LOG, "WidgetProvider.onUpdate - Number of widgetIds: " + appWidgetIds.length);
 
 		for (int widgetId : appWidgetIds)
 		{
-			// For each widgetId instance, call for an update
-			updateAppWidget(context, appWidgetManager, widgetId);
+			// Get access to our widget Preferences
+			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+
+			//check if configured
+			boolean configured = preferences.getBoolean(WidgetProvider.WIDGET_CONFIGURED_VALUE + "_" + widgetId, false);
+
+			if(configured == true)
+			{
+				// For each widgetId instance, call for an update
+				updateAppWidget(context, appWidgetManager, widgetId);
+			}
+			else
+			{
+				Log.d(LOG, "WidgetProvider.onUpdate - WidgetId " + widgetId + " not configured!");
+			}
 		}
 	}
 
@@ -124,7 +143,7 @@ public class WidgetProvider extends AppWidgetProvider
 		// Log that cancelAlarmManager was called
 		Log.d(LOG, "WidgetProvider.cancelAlarmManager called.");
 
-		// TODO Remove AlarmManager associated with the deleted widget(s)
+		// remake the AlarmManager associated with the deleted widget(s)
 		AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 		Intent alarmIntent = new Intent(context, WidgetConfigureActivity.class);
 
@@ -135,7 +154,7 @@ public class WidgetProvider extends AppWidgetProvider
 		// action UPDATE_ONE
 		alarmIntent.setData(uris.get(widgetId));
 		alarmIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
-		// recreate the alarm data
+		// recreate the final alarm data
 		PendingIntent pendingAlarmIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 		// cancel the alarm

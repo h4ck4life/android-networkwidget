@@ -183,7 +183,7 @@ public class WidgetUpdateService extends Service
 			// else (phone type == CDMA) so get info for that type
 			else if (telephonyManager.getPhoneType() == TelephonyManager.PHONE_TYPE_CDMA)
 			{
-				// Log that Phone Type is GSM
+				// Log that Phone Type is CDMA
 				Log.d(LOG, "WidgetUpdateService.onStart - Phone Type: CDMA");
 
 				// Check AirplaneMode

@@ -92,7 +92,7 @@ public class WidgetConfigureActivity extends Activity
 
 	public void setTitleBar()
 	{
-		// Setup
+		// Setup access to Display information
 		Display display = ((WindowManager)this.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 		int width, height;
 		
@@ -162,14 +162,12 @@ public class WidgetConfigureActivity extends Activity
 		// Log that onConfirm was called
 		Log.d(LOG, "WidgetConfigureActivity.onConfirm called.");
 
-		// Store our configuration
+		// Set up the widget's preferences
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
 		SharedPreferences.Editor editPreferences = preferences.edit();
-		/*
-		 * Add config changes here - not unlike this:
-		 * editPreferences.putInt(WidgetProvider.EXTRA_COLOR_VALUE+"_"+widgetID,
-		 * color);
-		 */
+		// set our WIDGET_CONFIGURED_VALUE variable
+		editPreferences.putBoolean(WidgetProvider.WIDGET_CONFIGURED_VALUE + "_" + widgetId, true);
+		//commit the preferences
 		editPreferences.commit();
 
 		// Call for the widgets' first update
