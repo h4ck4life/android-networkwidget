@@ -15,6 +15,7 @@
     <string name="widget_configure_activity_setting_background_radio_">PLACEHOLDER!</string>
     <string name="widget_configure_activity_setting_background_radio_dark">Dark</string>
     <string name="widget_configure_activity_setting_background_radio_light">Light</string>
+    <string name="widget_configure_activity_setting_logo">Widget Logo</string>
     
     <string name="widget_configure_activity_btn_">PLACEHOLDER!</string>
     <string name="widget_configure_activity_btn_cancel">Cancel</string>

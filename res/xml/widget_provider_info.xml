@@ -2,8 +2,8 @@
 
 <!-- 4x1 Widget -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minHeight="72dip"
-    android:minWidth="294dip"
+    android:minHeight="56dip"
+    android:minWidth="272dip"
     android:configure="com.ecctm.networkwidget.WidgetConfigureActivity" >
 </appwidget-provider>
 

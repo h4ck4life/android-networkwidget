@@ -15,6 +15,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ public class WidgetConfigureActivity extends Activity
 	private int widgetId;
 	private int updateFrequencyMins;
 	private static final String LOG = "com.ecctm.networkwidget";
+	private ImageView preview;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -60,6 +62,9 @@ public class WidgetConfigureActivity extends Activity
 		// Call the layout so our configure activity is usable
 		setContentView(R.layout.widget_configure_activity_layout);
 
+		// Link up our preview
+		preview = (ImageView) findViewById(R.id.widget_configure_activity_setting_background_preview);
+		
 		// Set things up for our update frequency seekBar
 		updateFrequencyMins = 30;
 		final TextView frequencySeekResult = (TextView) findViewById(R.id.widget_configure_activity_setting_frequency_seekBar_result);
@@ -141,6 +146,8 @@ public class WidgetConfigureActivity extends Activity
 					Log.d(LOG, "WidgetConfigureActivity.onRadioButtonClicked - Dark Widget");
 
 					editPreferences.putInt(WidgetProvider.WIDGET_BACKGROUND_VALUE + "_" + widgetId, 0);
+					preview.setImageResource(R.drawable.preview_dark);
+					
 				}
 				break;
 			case R.id.widget_configure_activity_setting_background_radio_light:
@@ -150,6 +157,7 @@ public class WidgetConfigureActivity extends Activity
 					Log.d(LOG, "WidgetConfigureActivity.onRadioButtonClicked - Light Widget");
 
 					editPreferences.putInt(WidgetProvider.WIDGET_BACKGROUND_VALUE + "_" + widgetId, 1);
+					preview.setImageResource(R.drawable.preview_light);
 				}
 				break;
 		}

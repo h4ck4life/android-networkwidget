@@ -1,7 +1,6 @@
 package com.ecctm.networkwidget;
 
 import java.util.HashMap;
-
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -74,7 +73,7 @@ public class WidgetProvider extends AppWidgetProvider
 	{
 		// Log that onUpdate was called
 		Log.d(LOG, "WidgetProvider.onUpdate called.");
-		
+
 		// TODO add some checks to see if we're updating all widgets or just one
 		// via a .appWidgetIds.length check
 		Log.d(LOG, "WidgetProvider.onUpdate - Number of widgetIds: " + appWidgetIds.length);
@@ -84,10 +83,10 @@ public class WidgetProvider extends AppWidgetProvider
 			// Get access to our widget Preferences
 			SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
 
-			//check if configured
+			// check if configured
 			boolean configured = preferences.getBoolean(WidgetProvider.WIDGET_CONFIGURED_VALUE + "_" + widgetId, false);
 
-			if(configured == true)
+			if (configured == true)
 			{
 				// For each widgetId instance, call for an update
 				updateAppWidget(context, appWidgetManager, widgetId);
@@ -95,6 +94,10 @@ public class WidgetProvider extends AppWidgetProvider
 			else
 			{
 				Log.d(LOG, "WidgetProvider.onUpdate - WidgetId " + widgetId + " not configured!");
+				/*
+				 * TODO call a updateUnconfiguredAppWidget() class for the //
+				 * damaged widget, showing it up in home launcher
+				 */
 			}
 		}
 	}

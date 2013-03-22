@@ -22,6 +22,7 @@ Features
 * Identifies current network via MNC & MCC
 * Displays current Mobile Network's logo and name on widget
 * A Configuration activity when the widget is added
+* A preview of the widget as it is being configured
 * Optional widget backgrounds (Dark or Light)
 * Widget updated on adjustable timer, only while device is active
 * Widget updated when touched
