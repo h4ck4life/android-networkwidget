@@ -19,6 +19,7 @@
             android:id="@+id/widget_configure_activity_setting_background_preview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/widget_configure_activity_preview_desc"
             android:src="@drawable/preview_dark" />
 
     </LinearLayout>
@@ -73,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="5dp"
-            android:paddingTop="15dp"
+            android:paddingTop="30dp"
             android:text="@string/widget_configure_activity_setting_background"
             android:textStyle="bold" />
 
@@ -101,15 +102,6 @@
                 android:onClick="onRadioButtonClicked"
                 android:text="@string/widget_configure_activity_setting_background_radio_light" />
         </RadioGroup>
-        
-        <TextView
-            android:id="@+id/widget_configure_activity_setting_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="5dp"
-            android:paddingTop="15dp"
-            android:text="@string/widget_configure_activity_setting_logo"
-            android:textStyle="bold" />
         
     </LinearLayout>
 
